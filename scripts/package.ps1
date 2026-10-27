@@ -1,4 +1,4 @@
-# Build bản release và đóng gói zip portable.
+﻿# Build bản release và đóng gói zip portable.
 # Cách dùng:  powershell -ExecutionPolicy Bypass -File scripts\package.ps1
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot

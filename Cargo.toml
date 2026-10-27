@@ -19,4 +19,8 @@ opt-level = "z"
 lto = true
 codegen-units = 1
 panic = "abort"
-strip = true
+# `strip = false`: giữ exe không strip cho dễ chạy trên máy bật Smart App Control.
+# Lưu ý: SAC (enforcement) có thể chặn file PE build mới chưa ký (os error 4551) →
+# `cargo build --release` fail ngay lúc cargo chạy build script. Trên máy bật SAC,
+# bản phát hành nên build bằng CI (GitHub Actions) thay vì build local.
+strip = false
