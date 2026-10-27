@@ -1,152 +1,162 @@
 <div align="center">
   <img src="icons/icon.png" width="112" alt="PortZap icon">
+
   <h1>PortZap</h1>
-  <p><b>Đĩa lệnh giữa màn hình để giải phóng port trong 1 giây.</b><br>
-  Bấm <b>Alt+K</b> → gõ <code>:3000</code> → <b>Enter</b> → port sạch.</p>
+
+  <p><b>Kill whatever is holding a port, without leaving the keyboard.</b></p>
+  <p>Press <kbd>Alt</kbd>+<kbd>K</kbd>, type <code>:3000</code>, press <kbd>Enter</kbd>. The port is free.</p>
+
   <p>
-    Windows 10/11 · Tray app · Tiếng Việt &amp; English · Mã nguồn mở (MIT)
+    <a href="../../releases/latest"><img src="https://img.shields.io/github/v/release/xuanquang0108/PortZap?label=release" alt="Latest release"></a>
+    <a href="../../actions/workflows/release.yml"><img src="https://github.com/xuanquang0108/PortZap/actions/workflows/release.yml/badge.svg" alt="Release workflow status"></a>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-16a34a" alt="MIT license"></a>
   </p>
+
+  <p>Windows 10/11 x64 · Portable · English &amp; Tiếng Việt · MIT</p>
 </div>
 
 <p align="center">
-  <img src="docs/screenshot.png" width="480" alt="PortZap — danh sách tiến trình giữ port 3000">
+  <img src="docs/screenshot.png" width="480" alt="PortZap listing three processes that hold port 3000, with an ALL button to kill them">
 </p>
 
 <p align="center">
-  <img src="docs/screenshot-idle.png" width="300" alt="PortZap — trạng thái chờ">
+  <img src="docs/screenshot-idle.png" width="300" alt="PortZap idle: PORT, PROCESS and HUNG shortcuts around an empty input">
 </p>
 
-## PortZap là gì?
+## Why
 
-Dev server báo `EADDRINUSE` rồi? Không cần mở Task Manager, không cần lục `netstat`.
-**PortZap** là overlay tròn nhỏ nằm trong system tray, mở ra bằng một phím tắt và cho
-bạn diệt tiến trình đang giữ port — ngay tại chỗ, không rời bàn phím.
+A dev server dies with `EADDRINUSE`. Finding the culprit means opening Task Manager and
+scanning the Details tab, or running `netstat -ano | findstr :3000` and then
+`taskkill`. Three windows, none of them where you were working.
 
-Ưu tiên số 1 của dự án là **nhanh**: mục tiêu mở overlay **< 100ms** từ lúc bấm hotkey.
-Không quét file, không tính toán rườm rà, chỉ đọc bảng kết nối của Windows.
+PortZap collapses that into three keystrokes. It lives in the system tray, opens an
+overlay in the centre of the screen on <kbd>Alt</kbd>+<kbd>K</kbd>, and kills the
+processes you select while your editor stays in focus.
 
-## Tính năng
+Speed is the point. The overlay targets **under 100 ms** from keypress to visible:
+it reads the Windows connection table directly (`GetExtendedTcpTable`) and never
+scans the disk.
 
-- **Mở bằng Alt+K** — đĩa lệnh hiện giữa màn hình, gõ là chạy.
-- **`:3000`** — liệt kê tiến trình đang giữ cổng 3000 (tên, PID, RAM) → Enter để diệt.
-- **`node`** — liệt kê mọi tiến trình theo tên → Enter để diệt cùng lúc.
-- **`hang`** — bắt app *"Not Responding"* → force kill ngay.
-- **Tự nhận diện chế độ**: gõ gì cũng được, PortZap tự đoán bạn muốn tra port hay tra tên.
-- **Thông báo toast** sau mỗi lần diệt (bao nhiêu PID, có bị từ chối quyền không).
-- **Thay đổi ngôn ngữ ngay trong tray** — tiếng Việt / English, không cần restart.
-- **Khởi động cùng Windows** (tắt mặc định), tùy chọn ngay trong menu tray.
-- **Không hiện thanh tác vụ** — overlay tự ẩn, chỉ hiện khi bạn gọi.
+## What you get
 
-## Cách dùng
+- **`:3000`** — every process holding port 3000: name, PID, memory. <kbd>Enter</kbd> kills them.
+- **`node`** — every process whose name matches, killed in one pass.
+- **`hang`** — apps stuck at *Not Responding*, force-killed.
+- **Mode is inferred.** Type a number or a name; PortZap works out which query you meant.
+- **A toast after each kill** — how many died, which were refused for lack of Admin rights.
+- **Language switch in the tray menu** — English / Tiếng Việt, applied immediately.
+- **Start with Windows** — off by default, one click in the tray menu.
+- **No taskbar entry.** The overlay appears when you call it and disappears when you don't.
 
-| Phím | Việc |
+## Use it
+
+| Key | Does |
 | --- | --- |
-| `Alt+K` | Mở / đóng overlay |
-| `Enter` | Diệt tiến trình đang được chọn |
-| `Esc` | Đóng overlay |
+| <kbd>Alt</kbd>+<kbd>K</kbd> | Open or close the overlay |
+| <kbd>Enter</kbd> | Kill the listed processes |
+| <kbd>Esc</kbd> | Close the overlay |
 
-| Lệnh | Ý nghĩa |
+| Query | Returns |
 | --- | --- |
-| `:3000` hoặc `3000` | Các tiến trình giữ port 3000 |
-| `node`, `chrome`, `Code`… | Các tiến trình trùng tên |
-| `hang` | App đang treo (Not Responding) |
+| `:3000` or `3000` | Processes holding port 3000 |
+| `node`, `chrome`, `Code`, … | Processes matching that name |
+| `hang` | Apps that are not responding |
 
-Menu chuột phải vào icon trong tray: **Ngôn ngữ** · **Khởi động cùng Windows** · **Thoát**.
+Right-click the tray icon for **Language**, **Start with Windows**, **Exit**.
 
-## Tải về
+## Download
 
-Tải bản mới nhất tại [**GitHub Releases**](../../releases/latest) → giải nén → chạy `portzap.exe`.
+Grab the zip from [**Releases**](../../releases/latest), unpack it, run `portzap.exe`.
+No installer, no leftovers: the only registry key it ever writes is the autostart entry
+you switch on yourself.
 
-- Portable, không cài đặt, không ghi registry ngoài key autostart (nếu bạn bật).
-- Windows 10/11 x64 · WebView2 (có sẵn trên Win11, [tải riêng](https://developer.microsoft.com/microsoft-edge/webview2/) nếu dùng Win10 bản cũ).
-- Lần đầu chạy có thể bị Smart App Control chặn (exe chưa có reputation) — thử lại sau,
-  hoặc build lại từ source trên máy bạn.
+- Windows 10/11 x64 · [WebView2](https://developer.microsoft.com/microsoft-edge/webview2/) (bundled with Windows 11; separate install on older Windows 10)
+- Settings live in `%APPDATA%\portzap\settings.json` (language and autostart)
+- Smart App Control may refuse to run unsigned executables. If that happens, build from
+  source below.
 
-Cài đặt ở: `%APPDATA%\portzap\settings.json` (ngôn ngữ + autostart).
+## Build from source
 
-## Xây dựng từ nguồn
-
-**Yêu cầu:** [Rust 1.90](https://rustup.rs/) (đã pin trong `rust-toolchain.toml`),
-Node.js 20+ *chỉ cần khi bạn sửa UI*.
+You need [Rust 1.90](https://rustup.rs/) (pinned in `rust-toolchain.toml`). Node.js 20+
+is only needed if you touch the UI.
 
 ```powershell
 git clone https://github.com/xuanquang0108/PortZap.git
 cd PortZap
 
-# Build bản release (ui/dist đã được commit nên không cần Node)
-cargo build --release
-
+cargo build --release      # ui/dist is committed, Node is not required
 target\release\portzap.exe
 ```
 
-> Nếu `cargo build --release` fail với *An Application Control policy has blocked
-> this file* (`os error 4551`): máy bạn bật **Smart App Control** (enforcement) và
-> chặn file PE build mới chưa ký. Build bản debug (`cargo build`) vẫn chạy, còn bản
-> release chính thức do CI build (xem `RELEASING.md`).
+> If `cargo build --release` fails with *An Application control policy has blocked this
+> file* (`os error 4551`), Smart App Control is in enforcement mode on your machine and
+> is rejecting unsigned binaries cargo just produced. Debug builds keep working, and
+> official releases are built by CI instead — see `RELEASING.md`.
 
-Sửa UI thì chạy thêm (bắt buộc sau khi đổi `ui/index.html`, `ui/app.js`, `ui/input.css`):
+After changing `ui/index.html`, `ui/app.js` or `ui/input.css`, rebuild the UI:
 
 ```powershell
 cd ui
-npm install        # lần đầu
-npm run build      # sinh ui/dist/ — hoặc npm run watch khi dev
+npm install        # first time only
+npm run build      # writes ui/dist/ — or npm run watch while developing
 ```
 
-Kiểm thử:
+Check your work:
 
 ```powershell
 cargo test
 cargo clippy --all-targets
 ```
 
-> **Quy tắc vàng:** không sửa tay trực tiếp trong `ui/dist/` — nó được sinh từ `ui/` và
-> nhúng thẳng vào exe. Sửa nguồn rồi chạy `npm run build`, rồi commit kèm file dist.
+> **Rule:** never edit files in `ui/dist/` by hand. They are generated from `ui/`,
+> compiled straight into the exe, and committed alongside the source. Edit the source,
+> run `npm run build`, commit both.
 
-## Cấu trúc dự án
+## Project layout
 
 ```
 ├── src/
-│   ├── main.rs        entry, mở overlay, nối các module
-│   ├── hotkey.rs      đăng ký Alt+K (RegisterHotKey)
-│   ├── port.rs        tìm tiến trình giữ port (GetExtendedTcpTable)
-│   ├── proc.rs        tra cứu & diệt tiến trình (taskkill /F /T)
-│   ├── hang.rs        phát hiện app Not Responding
-│   ├── commands.rs    parse lệnh người dùng (port / tên / hang)
-│   ├── tray.rs        icon tray + menu (vẽ icon bằng code)
-│   ├── toast.rs       toast Windows
-│   ├── settings.rs    settings.json + autostart (registry Run)
-│   └── i18n.rs        chuỗi tiếng Việt / English
+│   ├── main.rs        entry point, overlay window, wiring
+│   ├── hotkey.rs      Alt+K registration (RegisterHotKey)
+│   ├── port.rs        processes holding a port (GetExtendedTcpTable)
+│   ├── proc.rs        process lookup and kill (taskkill /F /T)
+│   ├── hang.rs        detection of unresponsive apps
+│   ├── commands.rs    query parsing — port, name, or hang
+│   ├── tray.rs        tray icon and menu (icon drawn in code)
+│   ├── toast.rs       Windows toast notifications
+│   ├── settings.rs    settings.json and autostart (registry Run key)
+│   └── i18n.rs        English / Tiếng Việt strings
 ├── ui/
-│   ├── index.html     markup overlay
-│   ├── app.js         vòng petal, render kết quả, giao tiếp Tauri
-│   ├── input.css      bảng màu (Tailwind 4 + biến CSS)
-│   └── dist/          file sinh tự động — đừng sửa tay
-├── icons/             icon app (icon.ico đa kích cỡ, icon.png)
-├── make_icon.ps1      sinh lại icon
-├── tauri.conf.json    cấu hình cửa sổ / identifier
-└── RELEASING.md       quy trình phát hành bản mới
+│   ├── index.html     overlay markup
+│   ├── app.js         petals, results, Tauri IPC
+│   ├── input.css      palette (Tailwind 4 + CSS variables)
+│   └── dist/          generated — do not edit
+├── icons/             app icon (multi-size .ico, .png)
+├── make_icon.ps1      regenerates icons/
+├── tauri.conf.json    window and app configuration
+└── RELEASING.md       how a version gets shipped
 ```
 
-## Đổi giao diện
+## Change the look
 
-- **Màu**: `ui/input.css` → biến `--acc`, `--acc-bright`, `--tint`, `--rim`, `--bg`
-  rồi chạy `npm run build`.
-- **Icon**: sửa hàm vẽ trong `make_icon.ps1` rồi chạy
-  `powershell -ExecutionPolicy Bypass -File make_icon.ps1`
-  (icon trong tray vẽ cùng hình ở `src/tray.rs`).
+- **Colour:** edit `ui/input.css` (`--acc`, `--acc-bright`, `--tint`, `--rim`, `--bg`),
+  then `npm run build`.
+- **Icon:** edit the drawing code in `make_icon.ps1` and run
+  `powershell -ExecutionPolicy Bypass -File make_icon.ps1`. The tray icon is drawn from
+  the same shape in `src/tray.rs`.
 
-## Đóng góp
+## Contributing
 
-Fork → nhánh → sửa → kiểm tra trước khi mở PR:
+Fork, branch, change, and check before opening a PR:
 
 ```powershell
-npm run build      # nếu có thay đổi UI
+npm run build      # if you touched the UI
 cargo test
 cargo clippy --all-targets
 ```
 
-Mọi lỗi và đề xuất đều welcome qua [Issues](../../issues).
+Bugs and ideas go in [Issues](../../issues).
 
-## Giấy phép
+## License
 
 [MIT](LICENSE) © PortZap contributors.
