@@ -79,6 +79,11 @@ cargo build --release
 target\release\portzap.exe
 ```
 
+> Nếu `cargo build --release` fail với *An Application Control policy has blocked
+> this file* (`os error 4551`): máy bạn bật **Smart App Control** (enforcement) và
+> chặn file PE build mới chưa ký. Build bản debug (`cargo build`) vẫn chạy, còn bản
+> release chính thức do CI build (xem `RELEASING.md`).
+
 Sửa UI thì chạy thêm (bắt buộc sau khi đổi `ui/index.html`, `ui/app.js`, `ui/input.css`):
 
 ```powershell
