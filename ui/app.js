@@ -452,6 +452,26 @@ listen("lang-changed", (e) => {
   if (input.value.trim()) runQuery();
 });
 
+// Browser preview (no Tauri backend): `?lang=en` renders the mock in English,
+// mirroring src/i18n.rs — used for README screenshots.
+const PREVIEW_EN = new URLSearchParams(location.search).get("lang") === "en";
+const PREVIEW_CFG = {
+  lang: "en",
+  core_label: "TARGET",
+  hint_idle: "type a port or app name",
+  hint_keys: "Enter kill · Esc close",
+  killing: "Killing…",
+  all_label: "ALL",
+  all_sub: "kill all",
+  query_failed: "Query failed",
+  kill_failed: "Couldn't kill",
+  mode_port: "PORT",
+  mode_proc: "PROCESS",
+  mode_proc_sub: "node …",
+  mode_hung: "HUNG",
+  mode_hung_sub: "not responding",
+};
+
 (async () => {
   try {
     const cfg = await invoke("ui_config");
@@ -469,7 +489,9 @@ listen("lang-changed", (e) => {
 })();
 
 function mockInvoke(cmd, args) {
-  if (cmd === "ui_config") return Promise.resolve({ ...DEFAULTS });
+  if (cmd === "ui_config") {
+    return Promise.resolve(PREVIEW_EN ? { ...PREVIEW_CFG } : { ...DEFAULTS });
+  }
   if (cmd === "hide_overlay") return Promise.resolve();
   if (cmd === "kill") {
     const pids = args?.pids || [];
@@ -485,7 +507,11 @@ function mockInvoke(cmd, args) {
     if (portMatch) {
       const port = Number(portMatch[1]);
       if (port === 5555) {
-        return Promise.resolve({ mode: "port", summary: "0 tiến trình · port 5555", rows: [] });
+        return Promise.resolve({
+          mode: "port",
+          summary: PREVIEW_EN ? "0 on port 5555" : "0 tiến trình · port 5555",
+          rows: [],
+        });
       }
       const count = port === 8080 ? 7 : port === 3000 ? 3 : 1;
       const names = ["node", "esbuild", "chrome", "Code", "explorer", "nginx", "python"];
@@ -496,14 +522,14 @@ function mockInvoke(cmd, args) {
       }));
       return Promise.resolve({
         mode: "port",
-        summary: `${count} tiến trình · port ${port}`,
+        summary: PREVIEW_EN ? `${count} on port ${port}` : `${count} tiến trình · port ${port}`,
         rows,
       });
     }
     if (raw.toLowerCase() === "hang") {
       return Promise.resolve({
         mode: "hang",
-        summary: "2 app đang treo",
+        summary: PREVIEW_EN ? "2 app(s) not responding" : "2 app đang treo",
         rows: [
           { pid: 4412, name: "explorer", ram_bytes: 210 * 1024 * 1024 },
           { pid: 9901, name: "Teams", ram_bytes: 380 * 1024 * 1024 },
@@ -511,7 +537,11 @@ function mockInvoke(cmd, args) {
       });
     }
     if (raw) {
-      return Promise.resolve({ mode: "name", summary: "0 tiến trình · 0 MB", rows: [] });
+      return Promise.resolve({
+        mode: "name",
+        summary: PREVIEW_EN ? "0 processes · 0 MB" : "0 tiến trình · 0 MB",
+        rows: [],
+      });
     }
     return Promise.resolve({ mode: null, summary: null, rows: [] });
   }
