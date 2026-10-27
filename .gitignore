@@ -1,0 +1,25 @@
+# Build
+/target/
+*.pdb
+
+# Node
+node_modules/
+ui/node_modules/
+
+# File sinh tự động của Tauri (chạy build là tái tạo)
+/gen/
+
+# IDE
+/.idea/
+*.iml
+
+# Tooling local, không thuộc app
+/.codegraph/
+/package.json
+/package-lock.json
+
+# Bản nháp design tham khảo (không dùng trong app)
+/image/
+
+# Artifact release
+/assets/

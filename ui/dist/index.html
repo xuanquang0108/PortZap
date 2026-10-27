@@ -1,0 +1,39 @@
+<!-- GENERATED FILE — edit ui/index.html and run `npm run build` -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PortZap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+<main id="app" class="app" aria-label="PortZap">
+  <div class="disc" aria-hidden="true"></div>
+
+  <svg id="ring" class="wheel" viewBox="0 0 460 460" aria-hidden="true"></svg>
+
+  <svg id="spinner" class="spinner" viewBox="0 0 460 460" aria-hidden="true">
+    <circle cx="230" cy="230" r="196" />
+  </svg>
+
+  <div id="labels" class="labels" aria-hidden="true"></div>
+
+  <section id="core" class="core">
+    <span id="core-label" class="core-label">ĐÍCH</span>
+    <input id="cmd" class="cmd" type="text" autocomplete="off" spellcheck="false" autofocus
+           aria-label="Cổng hoặc tên tiến trình" placeholder="3000 · node" />
+    <p id="context" class="context" aria-live="polite">
+      <span id="ctx-main" class="ctx-main"></span>
+      <span id="ctx-sub" class="ctx-sub"></span>
+    </p>
+  </section>
+
+  <div id="hits" class="hits" role="group" aria-label="Kết quả"></div>
+</main>
+<script src="./app.js"></script>
+</body>
+</html>

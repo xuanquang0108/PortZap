@@ -1,0 +1,6 @@
+{
+  "identifier": "default",
+  "description": "Overlay window capabilities",
+  "windows": ["main"],
+  "permissions": ["core:default", "core:event:allow-listen"]
+}
