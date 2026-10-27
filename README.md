@@ -70,7 +70,7 @@ Cài đặt ở: `%APPDATA%\portzap\settings.json` (ngôn ngữ + autostart).
 Node.js 20+ *chỉ cần khi bạn sửa UI*.
 
 ```powershell
-git clone https://github.com/GlyphNomad/PortZap.git
+git clone https://github.com/xuanquang0108/PortZap.git
 cd PortZap
 
 # Build bản release (ui/dist đã được commit nên không cần Node)
